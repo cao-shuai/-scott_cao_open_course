@@ -2,12 +2,12 @@
 #makefile for build linkers and loaders
 #
 
+Q ?= @
 
 STATIC=libbuild_linkers_and_loaders.a
 DYNAMIC=libbuild_linkers_and_loaders.so
 
 DEBUG = -g -O0
-NONEDEBUG = -O0
 CC = gcc
 AR = ar
 INCLUDE = -I ../include/
@@ -21,12 +21,13 @@ SRC = function_addr_demo.c
 
 OBJ = $(SRC:.c=.o)
 
-all:  $(DYNAMIC)
+.PHONY: all clean
 
-.PHONY: static
-static : $(OBJ)
+all:  $(DYNAMIC) $(STATIC)
+
+$(STATIC) : $(OBJ)
 	$Q echo "[Link (Static)]"
-	$Q $(AR) -r $(STATIC) $(OBJ) 
+	$Q $(AR) -r $(STATIC) $(OBJ)
 
 $(DYNAMIC): $(OBJ)
 	$Q echo "[Link (Dynamic)]"
@@ -37,6 +38,7 @@ $(DYNAMIC): $(OBJ)
 	$Q $(CC) -c $(CFLAGS) $< -o $@
 
 .PHONY: clean
+
 clean:
 	$Q echo "[clean]"
 	$Q rm -rf $(OBJ) $(STATIC) $(DYNAMIC)
