@@ -1,11 +1,12 @@
 #
 #makefile for build linkers and loaders
 #
+CURDIR=$(shell pwd)
+MOUDLE = build_linkers_and_loaders
 
-Q ?= @
 
-STATIC=libbuild_linkers_and_loaders.a
-DYNAMIC=libbuild_linkers_and_loaders.so
+STATICLIB=libbuild_linkers_and_loaders.a
+DYNAMICLIB=libbuild_linkers_and_loaders.so
 
 DEBUG = -g -O0
 CC = gcc
@@ -23,22 +24,21 @@ OBJ = $(SRC:.c=.o)
 
 .PHONY: all clean
 
-all:  $(DYNAMIC) $(STATIC)
+all:  $(DYNAMICLIB) $(STATICLIB)
+	$Q echo "[mv obj to out]"
+	$Q mv -f *.o $(CURDIR)/../out/symbols/obj/
 
-$(STATIC) : $(OBJ)
-	$Q echo "[Link (Static)]"
-	$Q $(AR) -r $(STATIC) $(OBJ)
+$(STATICLIB) : $(OBJ)
+	$Q echo "[Link build_linkers_and_loaders Static lib]"
+	$Q $(AR) -r $(CURDIR)/../out/symbols/lib/static/$(STATICLIB) $(OBJ)
 
-$(DYNAMIC): $(OBJ)
-	$Q echo "[Link (Dynamic)]"
-	$Q $(CC) -shared -o $(DYNAMIC) $(OBJ)
+$(DYNAMICLIB): $(OBJ)
+	$Q echo "[Link build_linkers_and_loaders Dynamic lib]"
+	$Q $(CC) -shared -o $(CURDIR)/../out/symbols/lib/dynamic/$(DYNAMICLIB) $(OBJ)
 
 .c.o:
-	$Q echo [Complie] $<
+	$Q echo [Complie build_linkers_and_loaders] $<
 	$Q $(CC) -c $(CFLAGS) $< -o $@
 
-.PHONY: clean
-
 clean:
-	$Q echo "[clean]"
-	$Q rm -rf $(OBJ) $(STATIC) $(DYNAMIC)
+	$Q echo "[clean build_linkers_and_loaders]"
