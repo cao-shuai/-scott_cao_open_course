@@ -43,11 +43,10 @@ $(DYNAMICLIB): $(OBJ)
 
 release:
 	$Q echo [release libs]
-	$Q $(shell strip -s $(CURDIR)/../out/symbols/lib/static/$(STATICLIB) -o $(CURDIR)/../out/lib/static/$(STATICLIB))	
-	$Q $(shell strip -s $(CURDIR)/../out/symbols/lib/dynamic/$(DYNAMICLIB) -o $(CURDIR)/../out/lib/dynamic/$(DYNAMICLIB))
-	$Q $(foreach variableobj, $(TARGSOBJS),strip -s $(variableobj) -o $(CURDIR)/../out/obj/$(variableobj))
+	$Q $(shell strip $(CURDIR)/../out/symbols/lib/static/$(STATICLIB) -o $(CURDIR)/../out/lib/static/$(STATICLIB))	
+	$Q $(shell strip $(CURDIR)/../out/symbols/lib/dynamic/$(DYNAMICLIB) -o $(CURDIR)/../out/lib/dynamic/$(DYNAMICLIB))
+	$Q $(foreach variableobj, $(TARGSOBJS),strip $(variableobj) -o $(CURDIR)/../out/obj/$(variableobj))
 	$Q mv -f *.o $(CURDIR)/../out/symbols/obj/
-
 
 clean:
 	$Q echo "[clean build_linkers_and_loaders]"
