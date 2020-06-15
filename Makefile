@@ -31,6 +31,8 @@ OUT_SYMBOLES_DLIBS=$(OUT_SYMBOLES)/lib/dynamic
 OUT_SYMBOLES_SLIBS=$(OUT_SYMBOLES)/lib/static
 OUT_OBJ=$(OUT)/obj
 OUT_LIB=$(OUT)/lib
+OUT_DLIBS=$(OUT_LIB)/dynamic
+OUT_SLIBS=$(OUT_LIB)/static
 
 $(shell test -d $(OUT) || mkdir -p $(OUT))
 $(shell test -d $(OUT_SYMBOLES) || mkdir -p $(OUT_SYMBOLES))
@@ -38,42 +40,31 @@ $(shell test -d $(OUT_SYMBOLES_OBJ) || mkdir -p $(OUT_SYMBOLES_OBJ))
 $(shell test -d $(OUT_SYMBOLES_DLIBS) || mkdir -p $(OUT_SYMBOLES_DLIBS))
 $(shell test -d $(OUT_SYMBOLES_SLIBS) || mkdir -p $(OUT_SYMBOLES_SLIBS))
 $(shell test -d $(OUT_OBJ) || mkdir -p $(OUT_OBJ))
-$(shell test -d $(OUT_LIB) || mkdir -p $(OUT_LIB))
+$(shell test -d $(OUT_DLIBS) || mkdir -p $(OUT_DLIBS))
+$(shell test -d $(OUT_SLIBS) || mkdir -p $(OUT_SLIBS))
 
 
 #########################################################export para ###########################################
 
-.PHONY: all clean release
+.PHONY: all build  release  clean
 
 SUBMOUDLES:=$(ROOT_DIR)/build_linkers_and_loaders
 
 all:
+	$(hide) echo "[all....]"
+	$(hide) make clean
+	$(hide) make build
+	$(hide) make release
+
+build:
 	$(hide) echo "[building....]"
 	$(hide) $(MAKE) -C $(SUBMOUDLES) all
 
-OBJS=$(wildcard $(OUT_SYMBOLES_OBJ)/*.o)
-SLIBS=$(wildcard $(OUT_SYMBOLES_SLIBS)/*.a)
-DLIBS=$(wildcard $(OUT_SYMBOLES_DLIBS)/*.so)
-
 release:
-	$(hide) echo "strips"
-	$(hide) echo "[strip objs]"
-	$(hide) echo $(OBJS)
-	$(hide) echo $(SLIBS)
-	$(hide) echo $(DLIBS)
-
-$(STRIPSOBJ):
-	$(hide) echo "[strip objs]"
-
-
-$(STRIPSSLIB):
-	$(hide) echo "[strip static libs]"
-
-
-$(STRIPDLIB):
-	$(hide) echo "[strip dynamic libs]"
+	$(hide) echo "[release....]"
+	$(hide) $(MAKE) -C $(SUBMOUDLES) release
 
 clean:
-	$(hide) echo "[clean]"
+	$(hide) echo "[clean....]"
 	$(hide) rm -rf $(OUT)
 	$(hide) $(MAKE) -C build_linkers_and_loaders clean
