@@ -49,20 +49,29 @@ $(shell test -d $(OUT_SLIBS) || mkdir -p $(OUT_SLIBS))
 .PHONY: all build  release  clean
 
 SUBMOUDLES:=$(ROOT_DIR)/build_linkers_and_loaders
+SRC = main.c
+
+OBJ = $(SRC:.c=.o)
 
 all:
 	$(hide) echo "[all....]"
 	$(hide) make clean
 	$(hide) make build
 	$(hide) make release
+	$(hide) $(CC) $(OUT_SYMBOLES_OBJ)/main.o -L $(OUT_SYMBOLES_DLIBS) -lbuild_linkers_and_loaders $(INCLUDE) $(ROOT_DIR)/include/ction_addr_demo.h -o $(OUT)/main.bin
 
-build:
+build: $(OBJ)
 	$(hide) echo "[building....]"
 	$(hide) $(MAKE) -C $(SUBMOUDLES) all
+
+.c.o:
+	$(hide) echo "build main"
+	$(hide) $(CC) -c $(CFLAGS) $< -o $(OUT_SYMBOLES_OBJ)/$@
 
 release:
 	$(hide) echo "[release....]"
 	$(hide) $(MAKE) -C $(SUBMOUDLES) release
+	$(hide) $(shell strip -s $(OUT_SYMBOLES_OBJ)/main.o -o $(OUT_OBJ)/main.o)
 
 clean:
 	$(hide) echo "[clean....]"
