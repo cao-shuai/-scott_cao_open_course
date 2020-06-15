@@ -21,12 +21,12 @@ SRC = function_addr_demo.c
 
 
 OBJ = $(SRC:.c=.o)
+TARGSOBJS=$(wildcard *.o)
 
 .PHONY: all clean
 
 all:  $(DYNAMICLIB) $(STATICLIB)
 	$Q echo "[mv obj to out]"
-	$Q mv -f *.o $(CURDIR)/../out/symbols/obj/
 
 $(STATICLIB) : $(OBJ)
 	$Q echo "[Link build_linkers_and_loaders Static lib]"
@@ -39,6 +39,15 @@ $(DYNAMICLIB): $(OBJ)
 .c.o:
 	$Q echo [Complie build_linkers_and_loaders] $<
 	$Q $(CC) -c $(CFLAGS) $< -o $@
+	$Q $(shell strip -s $(CURDIR)/$@ -o $(CURDIR)/../out/obj/$@)
+
+release:
+	$Q echo [release libs]
+	$Q $(shell strip -s $(CURDIR)/../out/symbols/lib/static/$(STATICLIB) -o $(CURDIR)/../out/lib/static/$(STATICLIB))	
+	$Q $(shell strip -s $(CURDIR)/../out/symbols/lib/dynamic/$(DYNAMICLIB) -o $(CURDIR)/../out/lib/dynamic/$(DYNAMICLIB))
+	$Q $(foreach variableobj, $(TARGSOBJS),strip -s $(variableobj) -o $(CURDIR)/../out/obj/$(variableobj))
+	$Q mv -f *.o $(CURDIR)/../out/symbols/obj/
+
 
 clean:
 	$Q echo "[clean build_linkers_and_loaders]"
